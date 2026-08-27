@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Menu - QuickBite{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2 class="mt-3 mb-4">Order Your Favorite Food</h2>
+
+    <!-- Category Filters -->
+    <div class="mb-4 d-flex flex-wrap gap-2">
+
+        <a href="{{ url_for('index') }}"
+           class="btn btn-sm {{ 'btn-danger' if not selected_category else 'btn-outline-danger' }}">
+            All
+        </a>
+
+        {% for c in categories %}
+        <a href="{{ url_for('index', category=c) }}"
+           class="btn btn-sm {{ 'btn-danger' if selected_category == c else 'btn-outline-danger' }}">
+            {{ c }}
+        </a>
+        {% endfor %}
+
+    </div>
+
+    <!-- Food Items -->
+    <div class="row g-4">
+
+        {% for food in foods %}
+
+        <div class="col-6 col-md-4 col-lg-3">
+
+            <div class="card h-100 shadow-sm food-card">
+
+                <!-- Food Image -->
+                <img
+                    src="{{ food.image_url }}"
+                    class="card-img-top"
+                    alt="{{ food.name }}"
+                    style="width: 100%; height: 200px; object-fit: cover;"
+                    onerror="this.onerror=null; this.src='https://placehold.co/600x400?text=No+Image';"
+                >
+
+                <div class="card-body d-flex flex-column">
+
+                    <!-- Food Name -->
+                    <h6 class="card-title mb-1">
+                        {{ food.name }}
+                    </h6>
+
+                    <!-- Description -->
+                    <p class="card-text text-muted small flex-grow-1">
+                        {{ food.description }}
+                    </p>
+
+                    <!-- Price -->
+                    <p class="fw-bold mb-2">
+                        ₹{{ "%.2f"|format(food.price) }}
+                    </p>
+
+                    <!-- Add To Cart -->
+                    <form method="POST"
+                          action="{{ url_for('add_to_cart', food_id=food.id) }}">
+
+                        <button type="submit"
+                                class="btn btn-danger btn-sm w-100">
+                            Add to Cart
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <div class="col-12">
+            <p class="text-muted">
+                No food items available right now. Check back soon!
+            </p>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
